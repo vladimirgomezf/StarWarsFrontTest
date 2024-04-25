@@ -134,3 +134,4 @@ dist
 /.idea/StarWarsFrontTest.iml
 /.idea/vcs.xml
 */.vscode/
+*/pnpm-lock.yaml
