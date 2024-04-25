@@ -2,6 +2,8 @@
 import apiServer from "../server/startWars"
 import {onMounted, ref} from "vue"
 import { InfoCircleOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons-vue"
+import DetailsModal from "@/components/DetailsModal.vue";
+import EditModal from "@/components/EditModal.vue";
 
 interface Person {
   name: string,
@@ -12,6 +14,7 @@ interface Person {
   eyeColor: string,
   birthYear: string,
   gender: string,
+  films: []
 }
 
 const people = ref()
@@ -77,10 +80,16 @@ const columns = [
     },
   ]
 const data = ref<Person[]>([])
+const showDetails = ref<boolean>(false)
+const modalsData = ref<object>({})
+const showEdition = ref<boolean>(false)
 
 onMounted(async () => {
+  data.value = []
+  page.value = 1
   for (let i: number = 1; i <= 9; i++) {
     await getvalues()
+    page.value++
   }
 })
 
@@ -95,24 +104,45 @@ const getvalues = async () =>  {
       skinColor: person.skin_color,
       eyeColor: person.eye_color,
       birthYear: person.birth_year,
-      gender: person.gender
+      gender: person.gender,
+      films: person.films
     })
   })
 }
-const viewDetails = () => {}
+const viewDetails = (record: object) => {
+  modalsData.value = record
+  showDetails.value = true
+}
+const viewEdit = (record: object) => {
+  modalsData.value = record
+  showEdition.value = true
+}
+const closeDetails = () => {
+  modalsData.value = {}
+  showDetails.value = false
+}
+const closeEdit = () => {
+  modalsData.value = {}
+  showEdition.value = false
+}
+const onChange = (pagination, filters, sorter, extra) =>  {
+  console.log('params', pagination, filters, sorter, extra);
+}
 </script>
 
 <template>
   <div>
     <div>
 <!--      {{ people }}-->
-      <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 10 }">
-        <template #bodyCell="{ column }">
+      <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 10 }"  @change="onChange">
+        <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'actions'">
-            <InfoCircleOutlined /> | <EditOutlined /> | <DeleteOutlined />
+            <InfoCircleOutlined @click="viewDetails(record)" /> | <EditOutlined @click="viewEdit(record)"/> | <DeleteOutlined />
           </template>
         </template>
       </a-table>
+      <details-modal v-show="showDetails" :show="showDetails" :data="modalsData" @close="closeDetails" />
+      <edit-modal v-show="showEdition" :show="showEdition" :data="modalsData" @close="closeEdit" />
     </div>
   </div>
 </template>
