@@ -128,6 +128,19 @@ const closeEdit = () => {
 const deleteRecord = (name: string) => {
   data.value = data.value.filter(person => person.name !== name)
 }
+const updateValue = (person: Person) => {
+  const existingItemIndex = data.value.findIndex((item) => item.name === person.name);
+  if (existingItemIndex !== -1) {
+    data.value.splice(existingItemIndex, 1, person)
+  }else {
+    console.error('Item not found in the list');
+  }
+  closeEdit()
+}
+const fromViewToEdit = (record: Person) => {
+  closeDetails()
+  viewEdit(record)
+}
 </script>
 
 <template>
@@ -140,8 +153,8 @@ const deleteRecord = (name: string) => {
           </template>
         </template>
       </a-table>
-      <details-modal v-show="showDetails" :show="showDetails" :data="modalsData" @close="closeDetails" />
-      <edit-modal v-show="showEdition" :show="showEdition" :data="modalsData" @close="closeEdit" />
+      <details-modal v-show="showDetails" :show="showDetails" :data="modalsData" @edit="fromViewToEdit" @close="closeDetails" />
+      <edit-modal v-show="showEdition" :show="showEdition" :data="modalsData" @close="closeEdit" @update="updateValue" />
     </div>
   </div>
 </template>

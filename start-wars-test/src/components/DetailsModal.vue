@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, onUpdated, reactive, ref} from "vue";
+import {computed, onUpdated, ref} from "vue";
 import type {Person} from "@/components/starWarsCRUD.vue";
 import {EditOutlined} from "@ant-design/icons-vue";
 
@@ -8,10 +8,8 @@ interface Props {
   data: Person
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'edit'])
 
-const labelCol = { style: { width: '150px' } };
-const wrapperCol = { span: 14 };
 const person = ref<Person>()
 
 onUpdated(async () => {
@@ -31,6 +29,9 @@ const viewModal = computed( () => props.show)
 const closeModal = () => {
   emit('close')
 }
+const changeToEdit = (person: Person) => {
+  emit('edit', person)
+}
 </script>
 
 <template>
@@ -40,11 +41,12 @@ const closeModal = () => {
       title="Show Character Information"
       centered
       width="35%"
-      @ok="closeModal"
       @cancel="closeModal"
       @close="closeModal"
     >
-
+      <template #footer>
+        <a-button key="submit" type="default" @click="closeModal">Close</a-button>
+      </template>
       <a-card hoverable>
         <h1>{{person.name ?? ""}}</h1>
         <div class="inlineData">
@@ -61,7 +63,7 @@ const closeModal = () => {
           </div>
         </div>
         <template #actions>
-          <EditOutlined key="edit" />
+          <EditOutlined key="edit" @click="changeToEdit(person)"/>
         </template>
       </a-card>
     </a-modal>
@@ -71,10 +73,10 @@ const closeModal = () => {
 <style scoped>
 .inlineData {
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping to two columns */
+  flex-wrap: wrap;
 }
 
 .column {
-  flex: 0 0 50%; /* Set width to 50% for each column */
+  flex: 0 0 50%;
 }
 </style>

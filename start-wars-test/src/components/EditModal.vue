@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {computed, onMounted, onUpdated, ref} from "vue";
+import {computed, onUpdated, ref} from "vue";
 import type {Person} from "@/components/starWarsCRUD.vue";
 
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
   data: Person
 }
 const props = defineProps<Props>()
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'update'])
 
 const labelCol = { style: { width: '150px' } };
 const wrapperCol = { span: 14 };
@@ -31,6 +31,9 @@ const viewEditModal = computed(() => props.show)
 const closeModal = () => {
   emit('close')
 }
+const saveModal = () => {
+  emit('update', person.value)
+}
 </script>
 
 <template>
@@ -40,10 +43,14 @@ const closeModal = () => {
       title="Edit Character Data"
       centered
       width="500px"
-      @ok="closeModal"
+      @ok="saveModal"
       @cancel="closeModal"
       @close="closeModal"
     >
+      <template #footer>
+        <a-button key="cancel" @click="closeModal">Cancel</a-button>
+        <a-button key="submit" type="primary" @click="saveModal">Save</a-button>
+      </template>
       <h1>{{person.name ?? ""}}</h1>
       <a-form
         :label-col="labelCol"
@@ -52,22 +59,22 @@ const closeModal = () => {
         style="max-width: 600px"
       >
         <a-form-item label="Height">
-          <a-input v-model="person.height" :value="person.height" />
+          <a-input v-model:value="person.height"/>
         </a-form-item>
         <a-form-item label="Mass">
-          <a-input v-model="person.mass" :value="person.mass" />
+          <a-input v-model:value="person.mass" />
         </a-form-item>
         <a-form-item label="Hair Color">
-          <a-input v-model="person.hairColor" :value="person.hairColor" />
+          <a-input v-model:value="person.hairColor" />
         </a-form-item>
         <a-form-item label="Skin Color">
-          <a-input v-model="person.skinColor" :value="person.skinColor" />
+          <a-input v-model:value="person.skinColor" />
         </a-form-item>
         <a-form-item label="Eye Color">
-          <a-input v-model="person.eyeColor" :value="person.eyeColor" />
+          <a-input v-model:value="person.eyeColor" />
         </a-form-item>
         <a-form-item label="Birth Year">
-          <a-input v-model="person.birthYear" :value="person.birthYear" />
+          <a-input v-model:value="person.birthYear" />
         </a-form-item>
         <a-form-item label="Gender">
           <a-select v-model:value="person.gender">
