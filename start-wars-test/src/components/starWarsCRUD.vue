@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import apiServer from "../server/startWars"
-import {onMounted, ref} from "vue"
-import { InfoCircleOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons-vue"
+import {h, onMounted, ref} from "vue"
+import {InfoCircleOutlined, EditOutlined, DeleteOutlined, PlusOutlined} from "@ant-design/icons-vue"
 import DetailsModal from "@/components/DetailsModal.vue";
 import EditModal from "@/components/EditModal.vue";
+import AddModal from "@/components/AddModal.vue";
 
 export interface Person {
   name: string,
@@ -83,6 +84,7 @@ const data = ref<Person[]>([])
 const showDetails = ref<boolean>(false)
 const modalsData = ref<object>({})
 const showEdition = ref<boolean>(false)
+const showAddition = ref<boolean>(false)
 
 onMounted(async () => {
   data.value = []
@@ -117,6 +119,9 @@ const viewEdit = (record: object) => {
   modalsData.value = record
   showEdition.value = true
 }
+const viewAdd = () => {
+  showAddition.value = true
+}
 const closeDetails = () => {
   modalsData.value = {}
   showDetails.value = false
@@ -124,6 +129,9 @@ const closeDetails = () => {
 const closeEdit = () => {
   modalsData.value = {}
   showEdition.value = false
+}
+const closeAdd = () => {
+  showAddition.value = false
 }
 const deleteRecord = (name: string) => {
   data.value = data.value.filter(person => person.name !== name)
@@ -137,6 +145,10 @@ const updateValue = (person: Person) => {
   }
   closeEdit()
 }
+const addValue = (person: Person) => {
+  data.value.push(person)
+  closeAdd()
+}
 const fromViewToEdit = (record: Person) => {
   closeDetails()
   viewEdit(record)
@@ -146,6 +158,11 @@ const fromViewToEdit = (record: Person) => {
 <template>
   <div>
     <div>
+      <div class="addRegion">
+        <a-tooltip title="Add Character">
+          <a-button type="primary" :icon="h(PlusOutlined)" @click="viewAdd">Add</a-button>
+        </a-tooltip>
+      </div>
       <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 10 }" >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'actions'">
@@ -155,12 +172,16 @@ const fromViewToEdit = (record: Person) => {
       </a-table>
       <details-modal v-show="showDetails" :show="showDetails" :data="modalsData" @edit="fromViewToEdit" @close="closeDetails" />
       <edit-modal v-show="showEdition" :show="showEdition" :data="modalsData" @close="closeEdit" @update="updateValue" />
+      <add-modal v-show="showAddition" :show="showAddition" @close="closeAdd" @add="addValue" />
     </div>
   </div>
 </template>
 
 <style scoped>
-.btn {
-  color: black;
+.addRegion {
+  display: flex;
+  width: auto;
+  justify-content: right;
+  margin-bottom: 1em;
 }
 </style>
