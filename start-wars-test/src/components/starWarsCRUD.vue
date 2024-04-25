@@ -5,7 +5,7 @@ import { InfoCircleOutlined, EditOutlined, DeleteOutlined } from "@ant-design/ic
 import DetailsModal from "@/components/DetailsModal.vue";
 import EditModal from "@/components/EditModal.vue";
 
-interface Person {
+export interface Person {
   name: string,
   height: number,
   mass: number,
@@ -125,19 +125,18 @@ const closeEdit = () => {
   modalsData.value = {}
   showEdition.value = false
 }
-const onChange = (pagination, filters, sorter, extra) =>  {
-  console.log('params', pagination, filters, sorter, extra);
+const deleteRecord = (name: string) => {
+  data.value = data.value.filter(person => person.name !== name)
 }
 </script>
 
 <template>
   <div>
     <div>
-<!--      {{ people }}-->
-      <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 10 }"  @change="onChange">
+      <a-table :columns="columns" :data-source="data" :pagination="{ pageSize: 10 }" >
         <template #bodyCell="{ column, record }">
           <template v-if="column.key === 'actions'">
-            <InfoCircleOutlined @click="viewDetails(record)" /> | <EditOutlined @click="viewEdit(record)"/> | <DeleteOutlined />
+            <InfoCircleOutlined @click="viewDetails(record)" /> | <EditOutlined @click="viewEdit(record)"/> | <DeleteOutlined @click="deleteRecord(record.name)" />
           </template>
         </template>
       </a-table>
