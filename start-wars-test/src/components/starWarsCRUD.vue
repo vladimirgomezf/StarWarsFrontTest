@@ -41,37 +41,37 @@ const columns = [
     },
     {
       title: 'Hair Color',
-      dataIndex: 'hair_color',
+      dataIndex: 'hairColor',
       sorter: {
-        compare: (a: any, b: any) => a.hair_color - b.hair_color
+        compare: (a: any, b: any) => a.hairColor.localeCompare(b.hairColor)
       },
     },
     {
       title: 'Skin Color',
-      dataIndex: 'skin_color',
+      dataIndex: 'skinColor',
       sorter: {
-        compare: (a: any, b: any) => a.skin_color - b.skin_color
+        compare: (a: any, b: any) => a.skinColor.localeCompare(b.skinColor)
       },
     },
     {
       title: 'Eye Color',
-      dataIndex: 'eye_color',
+      dataIndex: 'eyeColor',
       sorter: {
-        compare: (a: any, b: any) => a.eye_color - b.eye_color
+        compare: (a: any, b: any) => a.eyeColor.localeCompare(b.eyeColor)
       },
     },
     {
       title: 'Birth Year',
-      dataIndex: 'birth_year',
+      dataIndex: 'birthYear',
       sorter: {
-        compare: (a: any, b: any) => a.birth_year - b.birth_year
+        compare: (a: any, b: any) => a.birthYear.localeCompare(b.birthYear)
       },
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
       sorter: {
-        compare: (a: any, b: any) => a.gender - b.gender
+        compare: (a: any, b: any) => a.gender.localeCompare(b.gender)
       },
     },
     {
@@ -157,6 +157,7 @@ const fromViewToEdit = (record: Person) => {
 
 <template>
   <div>
+    <div class="imageBanner"></div>
     <div>
       <div class="addRegion">
         <a-tooltip title="Add Character">
@@ -183,5 +184,12 @@ const fromViewToEdit = (record: Person) => {
   width: auto;
   justify-content: right;
   margin-bottom: 1em;
+}
+.imageBanner {
+  display: flex;
+  width: auto;
+  height: auto;
+  margin-bottom: 1em;
+  background-image: url("@/assets/banner.jpg");
 }
 </style>
